@@ -45,6 +45,9 @@ bail() {
   echo -e "\033[31m  failed: $1\033[0m"
   exit 1
 }
+
+[[ $(which ec2-run-instances) ]] || bail "No EC2 AMI Tools found"
+
 if [ $LAUNCH ]; then
   [[ -f .env.$LAUNCH ]] || bail "no .env.$LAUNCH found"
   source .env.$LAUNCH
