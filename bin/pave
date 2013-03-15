@@ -7,7 +7,7 @@ function usage
   echo
   echo "$(basename $0) manages your EC2 instances"
   echo
-  echo "usage: $(basename $0) [launch env] | [terminate instance-id] | [list] | [--help]"
+  echo "usage: $(basename $0) [launch environment] | [terminate instance-id] | [list] | [--help]"
   echo
   echo "       launch             : launch a new EC2 instance"
   echo "       terminate          : terminate an existing EC2 instance"
@@ -16,8 +16,8 @@ function usage
   echo
 }
 
-while [ "$1" != "" ]; do
-  case $1 in
+while test $# != 0; do
+  case "$1" in
     launch)
       LAUNCH=1
       if [ "$2" != "" ]; then
