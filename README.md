@@ -33,6 +33,4 @@ I've also pushed this a bit further when it comes to support multi-stage situati
 
 ## Choosing an AMI ##
 
-* [Prefer 64-bit instances](http://alestic.com/2012/03/ec2-64-bit)
-* [Prefer EBS Boot instances](http://alestic.com/2012/01/ec2-ebs-boot-recommended)
-* [My preference - search for "precise 64 us east ebs"](http://cloud.ubuntu.com/ami/)
+I [prefer 64-bit instances](http://alestic.com/2012/03/ec2-64-bit) and [EBS Boot instances](http://alestic.com/2012/01/ec2-ebs-boot-recommended).  I choose to use LTS releases of Ubuntu and take advantage of lower instance pricing in the US East region.  That pretty much forces me into the following criteria when I [search for an AMI](http://cloud.ubuntu.com/ami/): `precise 64 us east ebs`.
