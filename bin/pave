@@ -7,7 +7,7 @@ function usage
   echo
   echo "$(basename $0) manages your EC2 instances"
   echo
-  echo "usage: $(basename $0) [launch env] | [terminate ami] | [list] | [--help]"
+  echo "usage: $(basename $0) [launch env] | [terminate instance-id] | [list] | [--help]"
   echo
   echo "       launch             : launch a new EC2 instance"
   echo "       terminate          : terminate an existing EC2 instance"
@@ -16,11 +16,14 @@ function usage
   echo
 }
 
-while test $# != 0; do
-  case "$1" in
+while [ "$1" != "" ]; do
+  case $1 in
     launch)
-      shift
-      LAUNCH=$1
+      LAUNCH=1
+      if [ "$2" != "" ]; then
+        shift
+        ENVIRONMENT=$1
+      fi
       ;;
     terminate)
       shift
@@ -49,8 +52,13 @@ bail() {
 [[ $(which ec2-run-instances) ]] || bail "No EC2 AMI Tools found"
 
 if [ $LAUNCH ]; then
-  [[ -f .env.$LAUNCH ]] || bail "no .env.$LAUNCH found"
-  source .env.$LAUNCH
+  if [ $ENVIRONMENT ]; then
+    ENV_FILE=.env.$ENVIRONMENT
+  else
+    ENV_FILE=.env
+  fi
+  [[ -f $ENV_FILE ]] || bail "no $ENV_FILE found"
+  source $ENV_FILE
 
   [[ -n $INSTANCE_TYPE && $REGION && $KEYPAIR && $AMI ]] || bail "invalid config"
   EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
