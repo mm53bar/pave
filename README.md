@@ -4,7 +4,8 @@
 
     bin/pave launch production       # creates an ec2 instance using production config
     bin/pave terminate i-5e09b621    # terminates ec2 instance i-5e09b621
-    bin/pave list                    # lists basic info for all ec2 instances 
+    bin/pave list                    # lists basic info for all ec2 instances
+    bin/pave --help                  # display usage instructions
 
 ## Install ##
 
