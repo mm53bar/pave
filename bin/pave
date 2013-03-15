@@ -104,6 +104,6 @@ if [ $TERMINATE ]; then
 fi
 
 if [ $LIST ]; then
-  ec2-describe-instances
+  ec2-describe-instances | grep 'INSTANCE' | grep 'running' | cut  -f 2,4,17
   exit 0
 fi
