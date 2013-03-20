@@ -7,9 +7,10 @@ function usage
   echo
   echo "$(basename $0) manages your EC2 instances"
   echo
-  echo "usage: $(basename $0) [launch environment] | [terminate instance-id] | [list] | [--help]"
+  echo "usage: $(basename $0) [launch environment] [--role rolename] | [terminate instance-id] | [list] | [--help]"
   echo
   echo "       launch             : launch a new EC2 instance"
+  echo "       --role             : use role when launching servers"  
   echo "       terminate          : terminate an existing EC2 instance"
   echo "       list               : list existing EC2 instances"
   echo "       --help             : displays the information you're reading now"
@@ -32,6 +33,10 @@ while test $# != 0; do
     list)
       LIST=1
       ;;
+    --role)
+      shift
+      ROLE=$1
+      ;;      
     --help)
       usage
       exit
@@ -61,10 +66,16 @@ if [ $LAUNCH ]; then
   source $ENV_FILE
 
   [[ -n $INSTANCE_TYPE && $REGION && $KEYPAIR && $AMI ]] || bail "invalid config"
+
+  TAG=${PWD##*/}
+  [[ $ROLE ]] && TAG+="_$ROLE"
+  TAG+="_$ENVIRONMENT"
+
   EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
   INSTANCE_NAME=$(echo ${EC2_RUN_RESULT} | sed 's/RESERVATION.*INSTANCE //' | sed 's/ .*//')
-  echo
 
+  ec2-create-tags $INSTANCE_NAME --tag "name=$TAG"
+  
   TOTAL_TIME=0
   MAX_TIME=181
   while [ $MAX_TIME -gt $TOTAL_TIME ] && ! ec2-describe-instances $INSTANCE_NAME | grep -q "running"
