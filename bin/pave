@@ -74,8 +74,8 @@ if [ $LAUNCH ]; then
   EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
   INSTANCE_NAME=$(echo ${EC2_RUN_RESULT} | sed 's/RESERVATION.*INSTANCE //' | sed 's/ .*//')
 
-  ec2-create-tags $INSTANCE_NAME --tag "name=$TAG"
-  
+  ec2-create-tags $INSTANCE_NAME --tag "Name=$TAG"
+
   TOTAL_TIME=0
   MAX_TIME=181
   while [ $MAX_TIME -gt $TOTAL_TIME ] && ! ec2-describe-instances $INSTANCE_NAME | grep -q "running"
