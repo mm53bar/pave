@@ -73,7 +73,18 @@ if [ $LAUNCH ]; then
     TAG+="_$ENVIRONMENT"
   fi
 
-  EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
+  # GROUP defaults to 'default' if not set
+  if [ ! $GROUP ]; then
+    GROUP="default"
+  fi
+
+  EC2_RUN_CMD="ec2-run-instances --instance-type $INSTANCE_TYPE --group $GROUP --region $REGION --key $KEYPAIR $AMI"
+  if [ $SUBNET ]; then
+    EC2_RUN_CMD="$EC2_RUN_CMD --subnet $SUBNET"
+  fi
+  EC2_RUN_RESULT=$($EC2_RUN_CMD)
+
+
   INSTANCE_NAME=$(echo ${EC2_RUN_RESULT} | sed 's/RESERVATION.*INSTANCE //' | sed 's/ .*//')
 
   ec2-create-tags $INSTANCE_NAME --tag "Name=$TAG"
