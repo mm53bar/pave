@@ -70,7 +70,9 @@ if [ $LAUNCH ]; then
   if [ ! $TAG ]; then
     TAG=${PWD##*/}
     [[ $ROLE ]] && TAG+="_$ROLE"
-    TAG+="_$ENVIRONMENT"
+    if [ $ENVIRONMENT ]; then
+      TAG+="_$ENVIRONMENT"
+    fi
   fi
 
   EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
