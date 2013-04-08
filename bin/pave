@@ -54,6 +54,23 @@ bail() {
   exit 1
 }
 
+# Sets the name of the EC2 instance to the supplied name.
+#
+# $1 = ECS instance id
+# $2 = name
+set_instance_name() {
+  local INSTANCE_ID=$1
+  local NAME_TAG=$2
+
+  local TOTAL_TIME=0
+  local MAX_TIME=181
+  while [ $MAX_TIME -gt $TOTAL_TIME ] && ! ec2-create-tags $INSTANCE_ID --tag "Name=$NAME_TAG"; do
+    TOTAL_TIME=$(( $TOTAL_TIME + 5 ))
+    echo "$INSTANCE_ID not provisioned. Waiting 5 seconds before checking again..."
+    sleep 5  
+  done
+}
+
 [[ $(which ec2-run-instances) ]] || bail "No EC2 AMI Tools found"
 
 if [ $LAUNCH ]; then
@@ -76,7 +93,7 @@ if [ $LAUNCH ]; then
   EC2_RUN_RESULT=$(ec2-run-instances --instance-type $INSTANCE_TYPE --group default --region $REGION --key $KEYPAIR $AMI)
   INSTANCE_NAME=$(echo ${EC2_RUN_RESULT} | sed 's/RESERVATION.*INSTANCE //' | sed 's/ .*//')
 
-  ec2-create-tags $INSTANCE_NAME --tag "Name=$TAG"
+  set_instance_name $INSTANCE_NAME $TAG
 
   TOTAL_TIME=0
   MAX_TIME=181
