@@ -87,7 +87,9 @@ if [ $LAUNCH ]; then
   if [ ! $TAG ]; then
     TAG=${PWD##*/}
     [[ $ROLE ]] && TAG+="_$ROLE"
-    TAG+="_$ENVIRONMENT"
+    if [ $ENVIRONMENT ]; then
+      TAG+="_$ENVIRONMENT"
+    fi
   fi
 
   # GROUP defaults to 'default' if not set
