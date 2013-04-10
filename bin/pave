@@ -73,12 +73,13 @@ set_instance_name() {
 
 [[ $(which ec2-run-instances) ]] || bail "No EC2 AMI Tools found"
 
+if [ ! $ENVIRONMENT ]; then
+  echo "Assuming staging environment..."
+  ENVIRONMENT="staging"
+fi
+
 if [ $LAUNCH ]; then
-  if [ $ENVIRONMENT ]; then
-    ENV_FILE=.env.$ENVIRONMENT
-  else
-    ENV_FILE=.env
-  fi
+  ENV_FILE=.env.$ENVIRONMENT
   [[ -f $ENV_FILE ]] || bail "no $ENV_FILE found"
   source $ENV_FILE
 
