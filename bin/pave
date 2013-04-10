@@ -56,7 +56,7 @@ bail() {
 
 # Sets the name of the EC2 instance to the supplied name.
 #
-# $1 = ECS instance id
+# $1 = EC2 instance id
 # $2 = name
 set_instance_name() {
   local INSTANCE_ID=$1
