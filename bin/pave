@@ -155,6 +155,9 @@ if [ $LAUNCH ]; then
   
   echo "You can ssh into your new instance with the following command:"
   echo "ssh -o StrictHostKeyChecking=no ubuntu@$INSTANCE_IP"
+  
+  sed -e "s/^SERVER=.*/SERVER=$INSTANCE_IP/g" $ENV_FILE > $ENV_FILE.tmp && mv $ENV_FILE.tmp $ENV_FILE
+  
   exit 0
 fi
 
